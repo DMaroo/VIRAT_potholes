@@ -22,12 +22,10 @@ class ImageConverter
 	image_geometry::PinholeCameraModel m_cam_model;
 	tf2_ros::Buffer m_tf_buffer;
 	tf2_ros::TransformListener m_tf_listener;
-	std::string m_frame_id;
 
 public:
-	ImageConverter(std::string frame_id) : m_it(m_nh),
-										   m_frame_id(frame_id),
-										   m_tf_listener(m_tf_buffer)
+	ImageConverter() : m_it(m_nh),
+					   m_tf_listener(m_tf_buffer)
 	{
 		m_image_sub = m_it.subscribeCamera("/virat/camera_top/image_raw", 1, &ImageConverter::image_cvb, this);
 	}
@@ -85,7 +83,7 @@ public:
 			vec_cam.y = direction_vec.z;
 			vec_cam.z = -direction_vec.y;
 
-			double norm = sqrt(vec_cam.x*vec_cam.x + vec_cam.y*vec_cam.y + vec_cam.z*vec_cam.z);
+			double norm = sqrt(vec_cam.x * vec_cam.x + vec_cam.y * vec_cam.y + vec_cam.z * vec_cam.z);
 
 			vec_cam.x /= norm;
 			vec_cam.y /= norm;
@@ -115,21 +113,20 @@ public:
 
 			// tf2::Quaternion result_q = -conj_tf_q_inv*vec_q*tf_q_inv;
 
-			norm = sqrt(vec_odom.x*vec_odom.x + vec_odom.y*vec_odom.y + vec_odom.z*vec_odom.z);
+			norm = sqrt(vec_odom.x * vec_odom.x + vec_odom.y * vec_odom.y + vec_odom.z * vec_odom.z);
 
 			vec_odom.x /= norm;
 			vec_odom.y /= norm;
 			vec_odom.z /= norm;
 
-			double lambda = -pos_odom.z/vec_odom.z;
+			double lambda = -pos_odom.z / vec_odom.z;
 
-			double x = pos_odom.x + lambda*vec_odom.x;
-			double y = pos_odom.y + lambda*vec_odom.y;
+			double x = pos_odom.x + lambda * vec_odom.x;
+			double y = pos_odom.y + lambda * vec_odom.y;
 
 			ROS_INFO("Pothole %d: (%lf, %lf) | vec_odom: (%lf, %lf, %lf) | pos_odom: (%lf, %lf, %lf)", count, x, y, vec_odom.x, vec_odom.y, vec_odom.z, pos_odom.x, pos_odom.y, pos_odom.z);
 
-			ros::Duration(0.1)
-				.sleep();
+			ros::Duration(0.1).sleep();
 
 			count++;
 		}
@@ -140,7 +137,7 @@ int main(int argc, char *argv[])
 {
 	ros::init(argc, argv, "virat_image_processor");
 
-	ImageConverter img_cvt("camera_link");
+	ImageConverter img_cvt;
 
 	ros::spin();
 }

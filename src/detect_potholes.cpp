@@ -3,7 +3,7 @@
 #include <image_geometry/pinhole_camera_model.h>
 #include <vector>
 
-std::vector<cv::Point> highlight_potholes(const cv_bridge::CvImagePtr& input)
+std::vector<cv::Point> highlight_potholes(const cv_bridge::CvImagePtr &input)
 {
 	cv::Mat highlighted_image = input->image;
 
@@ -19,7 +19,7 @@ std::vector<cv::Point> highlight_potholes(const cv_bridge::CvImagePtr& input)
 	cv::cvtColor(highlighted_image, highlighted_image, cv::COLOR_BGR2GRAY);
 	cv::threshold(highlighted_image, highlighted_image, 0, 255, cv::ThresholdTypes::THRESH_BINARY);
 
-	std::vector< std::vector<cv::Point> > contours;
+	std::vector<std::vector<cv::Point>> contours;
 	cv::Mat contour_img = highlighted_image.clone();
 
 	cv::findContours(contour_img, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
@@ -33,12 +33,11 @@ std::vector<cv::Point> highlight_potholes(const cv_bridge::CvImagePtr& input)
 			cv::RotatedRect ellipse = cv::fitEllipse(contours[ind]);
 			centers.push_back(ellipse.center);
 		}
-		catch (cv::Exception& exc)
+		catch (cv::Exception &exc)
 		{
 			continue;
 		}
 	}
-
 
 	return centers;
 }
