@@ -92,27 +92,6 @@ public:
 			tf2::doTransform<geometry_msgs::Point>(pos_cam, pos_odom, cam2odom);
 			tf2::doTransform<geometry_msgs::Vector3>(vec_cam, vec_odom, cam2odom);
 
-			// double norm_x = unit_vec.x, norm_y = unit_vec.y, norm_z = unit_vec.z, norm;
-
-			// norm = sqrt(norm_x*norm_x + norm_y*norm_y + norm_z*norm_z);
-
-			// norm_x /= norm;
-			// norm_y /= norm;
-			// norm_z /= norm;
-
-			// tf2::Quaternion vec_q, tf_q, conj_tf_q_inv;
-
-			// vec_q.setValue(norm_x, norm_z, -norm_y, 0.0);
-
-			// auto temp = cam2odom.transform.rotation;
-
-			// tf_q.setValue(temp.x, temp.y, temp.z, temp.w);
-			// tf2::Quaternion tf_q_inv = tf_q.inverse();
-
-			// conj_tf_q_inv.setValue(tf_q_inv.x(), -tf_q_inv.y(), -tf_q_inv.z(), -tf_q_inv.w());
-
-			// tf2::Quaternion result_q = -conj_tf_q_inv*vec_q*tf_q_inv;
-
 			norm = sqrt(vec_odom.x * vec_odom.x + vec_odom.y * vec_odom.y + vec_odom.z * vec_odom.z);
 
 			vec_odom.x /= norm;
@@ -124,7 +103,8 @@ public:
 			double x = pos_odom.x + lambda * vec_odom.x;
 			double y = pos_odom.y + lambda * vec_odom.y;
 
-			ROS_INFO("Pothole %d: (%lf, %lf) | pos_odom: (%lf, %lf, %lf)", count, x, y, pos_odom.x, pos_odom.y, pos_odom.z);
+			ROS_INFO("Pothole %d: (%lf, %lf)", count, x, y);
+			// ROS_INFO("Pothole %d: (%lf, %lf) | vec_odom: (%lf, %lf, %lf)", count, x, y, vec_odom.x, vec_odom.y, vec_odom.z);
 
 			ros::Duration(0.1).sleep();
 
