@@ -21,14 +21,11 @@ class ImageConverter
 	image_transport::CameraSubscriber m_image_sub;
 	image_geometry::PinholeCameraModel m_cam_model;
 	tf2_ros::Buffer m_tf_buffer;
-	tf2_ros::Buffer m_tf_buffer1;
 	tf2_ros::TransformListener m_tf_listener;
-	tf2_ros::TransformListener m_tf_listener1;
 
 public:
 	ImageConverter() : m_it(m_nh),
-					   m_tf_listener(m_tf_buffer),
-					   m_tf_listener1(m_tf_buffer1)
+					   m_tf_listener(m_tf_buffer)
 	{
 		m_image_sub = m_it.subscribeCamera("/virat/camera_top/image_raw", 1, &ImageConverter::image_cvb, this);
 	}
@@ -55,12 +52,11 @@ public:
 
 		m_cam_model.fromCameraInfo(info_msg);
 
-		geometry_msgs::TransformStamped odom2cam, cam2odom;
+		geometry_msgs::TransformStamped cam2odom;
 
 		try
 		{
-			odom2cam = m_tf_buffer.lookupTransform("odom", m_cam_model.tfFrame(), ros::Time(0));
-			cam2odom = m_tf_buffer1.lookupTransform(m_cam_model.tfFrame(), "odom", ros::Time(0));
+			cam2odom = m_tf_buffer.lookupTransform("odom", m_cam_model.tfFrame(), ros::Time(0));
 		}
 		catch (tf2::TransformException &exc)
 		{
@@ -93,7 +89,7 @@ public:
 			vec_cam.y /= norm;
 			vec_cam.z /= norm;
 
-			tf2::doTransform<geometry_msgs::Point>(pos_cam, pos_odom, odom2cam);
+			tf2::doTransform<geometry_msgs::Point>(pos_cam, pos_odom, cam2odom);
 			tf2::doTransform<geometry_msgs::Vector3>(vec_cam, vec_odom, cam2odom);
 
 			// double norm_x = unit_vec.x, norm_y = unit_vec.y, norm_z = unit_vec.z, norm;
@@ -108,7 +104,7 @@ public:
 
 			// vec_q.setValue(norm_x, norm_z, -norm_y, 0.0);
 
-			// auto temp = odom2cam.transform.rotation;
+			// auto temp = cam2odom.transform.rotation;
 
 			// tf_q.setValue(temp.x, temp.y, temp.z, temp.w);
 			// tf2::Quaternion tf_q_inv = tf_q.inverse();
