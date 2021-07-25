@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_geometry
   tf2_ros
   tf2_geometry_msgs
+  pcl_ros
 )
 
 find_package(OpenCV REQUIRED)
@@ -141,6 +142,7 @@ include
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME} src/main.cpp src/detect_potholes.cpp)
+add_executable(${PROJECT_NAME}_pcl src/main_pcl.cpp src/detect_potholes_pcl.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -154,6 +156,11 @@ add_executable(${PROJECT_NAME} src/main.cpp src/detect_potholes.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+)
+
+target_link_libraries(${PROJECT_NAME}_pcl
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
 )
